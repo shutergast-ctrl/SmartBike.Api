@@ -8,8 +8,8 @@ POST {{SmartBike.Api_HostAddress}}/api/telemetry
 Content-Type: application/json
 
 {
- "userId": 1,
- "longitude": 5.12345,
- "latitude": 52.12345,
- "timestamp": "2025-01-01T12:00:00"
+  "userId": 1,
+  "longitude": 5.12345,
+  "latitude": 52.12345,
+  "timestamp": "2025-01-01T12:00:00"
 }
