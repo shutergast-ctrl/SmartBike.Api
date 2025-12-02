@@ -4,8 +4,9 @@ GET {{SmartBike.Api_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ### Telemetry toevoegen
-POST https://localhost:7241/api/telemetry
+POST {{SmartBike.Api_HostAddress}}/api/telemetry
 Content-Type: application/json
+
 {
  "userId": 1,
  "longitude": 5.12345,

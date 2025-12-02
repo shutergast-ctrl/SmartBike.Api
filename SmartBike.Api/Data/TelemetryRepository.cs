@@ -12,9 +12,10 @@ namespace SmartBike.Api.Data
 
 		public TelemetryRepository(IConfiguration configuration)
 		{
-			_connectionString = configuration.GetConnectionString("SmartBikeDb");
-
+			_connectionString = configuration.GetConnectionString("DefaultConnection")
+				?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 		}
+
 
 		public async Task<int> InsertTelemetryAsync(TelemetryDto telemetry)
 		{
