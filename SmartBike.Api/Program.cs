@@ -1,11 +1,13 @@
-using SmartBike.Api.Data;
+﻿using SmartBike.Api.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Controllers inschakelen
 builder.Services.AddControllers();
 
-// Repository registreren
+// Swagger registratie
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 builder.Services.AddScoped<ITelemetryRepository, TelemetryRepository>();
 
 var app = builder.Build();
@@ -13,7 +15,13 @@ var app = builder.Build();
 app.UseHttpsRedirection();
 app.UseAuthorization();
 
-// Controllers routen
+// Swagger UI alleen in Development
+if (app.Environment.IsDevelopment())
+{
+	app.UseSwagger();
+	app.UseSwaggerUI();
+}
+
 app.MapControllers();
 
 app.Run();

@@ -52,23 +52,33 @@ namespace SmartBike.Api.Data
 		public async Task<TelemetryDto?> GetLastTelemetryAsync(int userId)
 		{
 			const string sql = @"
-               SELECT TOP 1 GPS_ID AS Id, UserId, Longitude, Latitude, Timestamp
-               FROM Telemetry
-               WHERE UserId = @UserId
-               ORDER BY Timestamp DESC;
-           ";
+        SELECT TOP 1 
+            GPS_ID AS Id,      -- < LET OP: GPS_ID als Id
+            UserId, 
+            Longitude, 
+            Latitude, 
+            Timestamp
+        FROM Telemetry
+        WHERE UserId = @UserId
+        ORDER BY Timestamp DESC;
+    ";
+
 			using var conn = new SqlConnection(_connectionString);
 			using var cmd = new SqlCommand(sql, conn);
+
 			cmd.Parameters.AddWithValue("@UserId", userId);
+
 			await conn.OpenAsync();
 			using var reader = await cmd.ExecuteReaderAsync();
+
 			if (!reader.Read())
 				return null;
+
 			return new TelemetryDto
 			{
 				Id = reader.GetInt32(0),
 				UserId = reader.GetInt32(1),
-				Longitude = reader.GetDecimal(2),  // let op decimal!
+				Longitude = reader.GetDecimal(2),  // als je DTO decimal heeft
 				Latitude = reader.GetDecimal(3),
 				Timestamp = reader.GetDateTime(4)
 			};
