@@ -15,9 +15,9 @@ namespace SmartBike.Api.Data
 		public async Task<int> InsertTelemetryAsync(TelemetryDto telemetry)
 		{
 			const string sql = @"
-				INSERT INTO Telemetry (UserId, Longitude, Latitude, Timestamp)
-				VALUES (@UserId, @Longitude, @Latitude, @Timestamp);
-				SELECT SCOPE_IDENTITY();";
+               INSERT INTO Telemetry (UserId, Longitude, Latitude, Timestamp)
+               VALUES (@UserId, @Longitude, @Latitude, @Timestamp);
+               SELECT SCOPE_IDENTITY();";
 			using var connection = new SqlConnection(_connectionString);
 			using var command = new SqlCommand(sql, connection);
 			command.Parameters.AddWithValue("@UserId", telemetry.UserId);
@@ -32,10 +32,10 @@ namespace SmartBike.Api.Data
 		{
 			const string sql = @"
                SELECT TOP 1 GPS_ID AS Id, UserId, Longitude, Latitude, Timestamp
-                FROM Telemetry
-                WHERE UserId = @UserId
-                ORDER BY Timestamp DESC;
-            ";
+               FROM Telemetry
+               WHERE UserId = @UserId
+               ORDER BY Timestamp DESC;
+           ";
 			using var conn = new SqlConnection(_connectionString);
 			using var cmd = new SqlCommand(sql, conn);
 			cmd.Parameters.AddWithValue("@UserId", userId);
