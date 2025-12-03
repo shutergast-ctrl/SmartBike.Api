@@ -14,20 +14,41 @@ namespace SmartBike.Api.Data
 		}
 		public async Task<int> InsertTelemetryAsync(TelemetryDto telemetry)
 		{
-			const string sql = @"
-               INSERT INTO Telemetry (UserId, Longitude, Latitude, Timestamp)
-               VALUES (@UserId, @Longitude, @Latitude, @Timestamp);
-               SELECT SCOPE_IDENTITY();";
-			using var connection = new SqlConnection(_connectionString);
-			using var command = new SqlCommand(sql, connection);
-			command.Parameters.AddWithValue("@UserId", telemetry.UserId);
-			command.Parameters.AddWithValue("@Longitude", telemetry.Longitude);
-			command.Parameters.AddWithValue("@Latitude", telemetry.Latitude);
-			command.Parameters.AddWithValue("@Timestamp", telemetry.Timestamp);
-			await connection.OpenAsync();
-			var result = await command.ExecuteScalarAsync();
-			return Convert.ToInt32(result);
+			try
+			{
+				Console.WriteLine("InsertTelemetryAsync gestart...");
+				Console.WriteLine($"UserId={telemetry.UserId}, Lon={telemetry.Longitude}, Lat={telemetry.Latitude}, Time={telemetry.Timestamp}");
+
+				const string sql = @"
+            INSERT INTO dbo.Telemetry (UserId, Longitude, Latitude, Timestamp)
+            VALUES (@UserId, @Longitude, @Latitude, @Timestamp);
+            SELECT SCOPE_IDENTITY();";
+
+				using var connection = new SqlConnection(_connectionString);
+				using var command = new SqlCommand(sql, connection);
+
+				command.Parameters.AddWithValue("@UserId", telemetry.UserId);
+				command.Parameters.AddWithValue("@Longitude", telemetry.Longitude);
+				command.Parameters.AddWithValue("@Latitude", telemetry.Latitude);
+				command.Parameters.AddWithValue("@Timestamp", telemetry.Timestamp);
+
+				await connection.OpenAsync();
+				Console.WriteLine("SQL-verbinding open.");
+
+				var result = await command.ExecuteScalarAsync();
+				Console.WriteLine("SQL-INSERT uitgevoerd. Result = " + result);
+
+				return Convert.ToInt32(result);
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine("FOUT in InsertTelemetryAsync:");
+				Console.WriteLine(ex.ToString());
+				throw; // laat de fout ook naar de client gaan (500)
+			}
 		}
+
+
 		public async Task<TelemetryDto?> GetLastTelemetryAsync(int userId)
 		{
 			const string sql = @"
